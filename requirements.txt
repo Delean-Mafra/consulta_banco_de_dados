@@ -1,0 +1,6 @@
+psutil
+pyperclip
+pandas
+flask
+flask-wtf
+wtforms
