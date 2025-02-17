@@ -27,6 +27,7 @@ def executar_consulta(data_inicio, data_fim, plano_conta=None):
     c = conn.cursor()
     
     query = f"""
+    --sql
     SELECT PC.NOME_PLANO_CONTA, SUM(LF.VALOR_PAGO) AS "VALOR"
     FROM LANC_FINANCEIRO LF
     LEFT JOIN PLANO_CONTA PC ON PC.COD_PLANO_CONTA = LF.COD_PLANO_CONTA
@@ -35,6 +36,7 @@ def executar_consulta(data_inicio, data_fim, plano_conta=None):
     AND (LF.DATA_PAGAMENTO BETWEEN '{data_inicio}' AND '{data_fim}' OR LF.DATA_DISPONIVEL_TEF BETWEEN '{data_inicio}' AND '{data_fim}')
     AND LF.TIPO_LANC_FIN = 'P'
     AND LF.ATV_LANC_FINANCEIRO = 'V'
+    AND PC.TIPO_PLANO_CONTA != 'C';
     """
     
     if plano_conta:
@@ -59,7 +61,7 @@ def obter_planos_conta():
         password=SENHA_BD
     )
     c = conn.cursor()
-    query = "SELECT DISTINCT NOME_PLANO_CONTA FROM PLANO_CONTA"
+    query = "SELECT DISTINCT NOME_PLANO_CONTA FROM PLANO_CONTA WHERE TIPO_PLANO_CONTA != 'C' ORDER BY NOME_PLANO_CONTA;"    
     c.execute(query)
     results = c.fetchall()
     conn.close()
