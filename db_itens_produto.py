@@ -1,3 +1,5 @@
+# Este script conecta ao banco de dados para obter informações sobre os gastos mensais com um item específico, identificado pelo código do produto fornecido pelo usuário. Ele calcula e exibe o total gasto por mês e a média mensal de gastos.
+
 from collections import defaultdict
 from db_lerconfiguracao import ler_configuracao, get_db
 db = get_db()

@@ -1,16 +1,7 @@
-from datetime import datetime
-import pyperclip
-from db_lerconfiguracao import ler_configuracao, get_db
+# import pyperclip
+from db_lerconfiguracao import ler_configuracao, get_db, datetime
 db = get_db()
-
 lc = ler_configuracao()
-
-# Configurações do banco de dados
-DIR_DADOS = lc['DIR_DADOS']
-USUARIO_BD = lc['USUARIO_BD']
-SENHA_BD = lc['SENHA_BD']
-SERVER = lc['SERVER']
-
 
 # Função para calcular a data de competência correta
 def calcular_data_competencia(data_vencimento):
@@ -26,10 +17,10 @@ def calcular_data_competencia(data_vencimento):
 # Conectar ao banco de dados
 try:
     conn = db.connect(
-        host=SERVER,
-        database=DIR_DADOS,
-        user=USUARIO_BD,
-        password=SENHA_BD
+    host=lc['SERVER'],
+    database=lc['DIR_DADOS'],
+    user=lc['USUARIO_BD'],
+    password=lc['SENHA_BD']
     )
     c = conn.cursor()
 

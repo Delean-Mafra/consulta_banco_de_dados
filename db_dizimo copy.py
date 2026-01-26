@@ -1,9 +1,8 @@
 from db_lerconfiguracao import ler_configuracao, get_db
 db = get_db()
 
-input("Pressione Enter para continuar...")
-
 lc = ler_configuracao()
+
 
 # Conectar ao banco de dados
 conn = db.connect(
@@ -58,9 +57,7 @@ SELECT SUM(X.VALOR_PAGO) / 10
 FROM LANC_FINANCEIRO X
 WHERE X.DATA_PAGAMENTO BETWEEN '{data_inicial}' AND '{data_final}'
 AND X.COD_CONTA_FINANCEIRA IN (25,30,4)
-AND X.TIPO_LANC_FIN = 'R'
-AND X.ATV_LANC_FINANCEIRO = 'V'
-AND X.COD_SITUACAO_TITULO = 4
+AND X.TIPO_LANC_FIN = 'R';
 """
 
 c.execute(query_select)
@@ -170,11 +167,98 @@ INSERT INTO LANC_FINANCEIRO (
 );
 """
 
+# Debug: imprimir a query antes de executar
+print("Query que será executada:")
+print(query_insert)
+print(f"COD_SITUACAO_TITULO será: 1 (em aberto/pendente)")
+
 # Executar o INSERT
 c.execute(query_insert)
 conn.commit()
 print("Insert realizado com sucesso!")
 
+# Verificar o registro recém-inserido
+query_verificacao = """
+SELECT COD_FIN, COD_SITUACAO_TITULO, VALOR_A_AMORTIZAR, DATA_COMPETENCIA, OBS_LANC
+FROM LANC_FINANCEIRO 
+WHERE COD_FIN = (SELECT MAX(COD_FIN) FROM LANC_FINANCEIRO WHERE COD_PLANO_CONTA = 107 AND COD_HISTORICO = 104)
+"""
+c.execute(query_verificacao)
+resultado = c.fetchone()
+if resultado:
+    print(f"Registro inserido - COD_FIN: {resultado[0]}, COD_SITUACAO_TITULO: {resultado[1]} (1=Aberto, 4=Baixado)")
+    print(f"Valor: {resultado[2]}, Competência: {resultado[3]}")
+    print(f"Observação: {resultado[4]}")
+
 # Fechar a conexão
 c.close()
 conn.close()
+
+
+
+
+# # import fdb
+# # from db_lerconfiguracao import ler_configuracao
+
+# # lc = ler_configuracao()
+
+# # # Configurações do banco de dados
+# # DIR_DADOS = lc['DIR_DADOS']
+# # USUARIO_BD = lc['USUARIO_BD']
+# # SENHA_BD = lc['SENHA_BD']
+# # SERVER = lc['SERVER']
+
+
+# # # Conectar ao banco de dados
+# # conn = fdb.connect(
+# #     host=SERVER,
+# #     database=DIR_DADOS,
+# #     user=USUARIO_BD,
+# #     password=SENHA_BD
+# # )
+# # c = conn.cursor()
+
+# # # Solicitar datas do usuário
+# # data_inicial = input("Insira a data inicial (dd.mm.yyyy): ")
+# # data_final = input("Insira a data final (dd.mm.yyyy): ")
+
+# # # Query para calcular o valor
+# # query_select = f"""
+# # --sql
+# # SELECT SUM(X.VALOR_PAGO) / 10
+# # FROM LANC_FINANCEIRO X
+# # WHERE X.DATA_PAGAMENTO BETWEEN '{data_inicial}' AND '{data_final}'
+# # AND X.COD_CONTA_FINANCEIRA IN (25,30,4)
+# # AND X.TIPO_LANC_FIN = 'R';
+# # """
+
+# # c.execute(query_select)
+# # valor_calculado = c.fetchone()[0] or 0  # Pega o resultado do SELECT
+# # print(f"Valor calculado: {valor_calculado:.2f}")
+
+# # # Solicitar mais dados do usuário
+# # data_vencimento = input("Insira a data de vencimento (dd.mm.yyyy): ")
+# # competencia = input("Insira a competência (mm/yyyy): ")
+
+# # # Query para o INSERT
+# # query_insert = f"""
+# # --sql
+# # INSERT INTO LANC_FINANCEIRO (
+# #     COD_FORNECEDOR, TIPO_REL, TIPO_LANC_FIN, ATV_LANC_FINANCEIRO, COD_HISTORICO, 
+# #     COD_PLANO_CONTA, COD_FORMA_PAGTO, COD_CONTA_FINANCEIRA, COD_CENTRO_CUSTO, COD_EMPRESA_FIN, 
+# #     COD_SITUACAO_TITULO, VALOR_PAGO, VALOR_AMORTIZADO, VALOR_A_AMORTIZAR, VALOR_PREVISTO, 
+# #     VALOR_PREVISTO_RESTANTE, DATA_VENCIMENTO, DATA_COMPETENCIA, COD_USUARIO_CRIADOR
+# # ) VALUES (
+# #     580, 'A', 'P', 'V', 104, 107, 22, 25, 3, 1, 1, 0, 0, {valor_calculado:.2f}, {valor_calculado:.2f}, {valor_calculado:.2f},
+# #     '{data_vencimento}', '{competencia}', 1
+# # );
+# # """
+
+# # # Executar o INSERT
+# # c.execute(query_insert)
+# # conn.commit()
+# # print("Insert realizado com sucesso!")
+
+# # # Fechar a conexão
+# # c.close()
+# # conn.close()

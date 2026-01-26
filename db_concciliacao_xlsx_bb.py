@@ -6,11 +6,6 @@ db = get_db()
 
 lc = ler_configuracao()
 
-# Configurações do banco de dados
-DIR_DADOS = lc['DIR_DADOS']
-USUARIO_BD = lc['USUARIO_BD']
-SENHA_BD = lc['SENHA_BD']
-SERVER = lc['SERVER']
 
 
 # Suprimir avisos de FutureWarning e UserWarning
@@ -32,10 +27,10 @@ warnings.showwarning = custom_warning_filter
 
 # Conectar ao banco de dados
 conn = db.connect(
-    host=SERVER,
-    database=DIR_DADOS,
-    user=USUARIO_BD,
-    password=SENHA_BD
+    host=lc['SERVER'],
+    database=lc['DIR_DADOS'],
+    user=lc['USUARIO_BD'],
+    password=lc['SENHA_BD']
 )
 
 # Cursor para executar as queries

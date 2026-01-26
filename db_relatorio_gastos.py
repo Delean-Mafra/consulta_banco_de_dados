@@ -10,19 +10,16 @@ db = get_db()
 key = secret_key()
 
 # Carregar configurações do banco de dados
-config = ler_configuracao()
-SERVER = config['SERVER']
-DIR_DADOS = config['DIR_DADOS']
-USUARIO_BD = config['USUARIO_BD']
-SENHA_BD = config['SENHA_BD']
+lc = ler_configuracao()
+
 
 # Função para conectar ao banco de dados e executar a consulta
 def executar_consulta(data_inicio, data_fim, plano_conta=None):
     conn = db.connect(
-        host=SERVER,
-        database=DIR_DADOS,
-        user=USUARIO_BD,
-        password=SENHA_BD
+    host=lc['SERVER'],
+    database=lc['DIR_DADOS'],
+    user=lc['USUARIO_BD'],
+    password=lc['SENHA_BD']
     )
     c = conn.cursor()
     
@@ -36,7 +33,7 @@ def executar_consulta(data_inicio, data_fim, plano_conta=None):
     AND (LF.DATA_PAGAMENTO BETWEEN '{data_inicio}' AND '{data_fim}' OR LF.DATA_DISPONIVEL_TEF BETWEEN '{data_inicio}' AND '{data_fim}')
     AND LF.TIPO_LANC_FIN = 'P'
     AND LF.ATV_LANC_FINANCEIRO = 'V'
-    AND PC.TIPO_PLANO_CONTA != 'C';
+    AND PC.TIPO_PLANO_CONTA != 'C'
     """
     
     if plano_conta:
@@ -55,10 +52,10 @@ def executar_consulta(data_inicio, data_fim, plano_conta=None):
 
 def obter_planos_conta():
     conn = db.connect(
-        host=SERVER,
-        database=DIR_DADOS,
-        user=USUARIO_BD,
-        password=SENHA_BD
+        host=lc['SERVER'],
+        database=lc['DIR_DADOS'],
+        user=lc['USUARIO_BD'],
+        password=lc['SENHA_BD']
     )
     c = conn.cursor()
     query = "SELECT DISTINCT NOME_PLANO_CONTA FROM PLANO_CONTA WHERE TIPO_PLANO_CONTA != 'C' ORDER BY NOME_PLANO_CONTA;"    
@@ -91,7 +88,7 @@ def index():
         results = executar_consulta(data_inicio, data_fim, plano_conta)
         total = sum(row[1] for row in results)
 
-    return render_template('index.html', form=form, results=results, total=total)
+    return render_template('index_db_relatorio_gastos.html', form=form, results=results, total=total)
 
 def open_browser():
     webbrowser.open_new('http://127.0.0.1:5000')

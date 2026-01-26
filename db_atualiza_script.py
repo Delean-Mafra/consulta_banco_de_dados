@@ -1,6 +1,9 @@
 import os
 import time
 from db_lerconfiguracao import ler_configuracao, get_db
+
+mensagem = "Tem certeza que deseja atualizar o banco de dados? Esta operação não pode ser desfeita."
+
 db = get_db()
 
 lc = ler_configuracao()

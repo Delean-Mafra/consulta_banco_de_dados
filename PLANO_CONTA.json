@@ -1,0 +1,389 @@
+[
+  {
+    "NOME_PLANO_CONTA": "Impostos e Taxas"
+  },
+  {
+    "NOME_PLANO_CONTA": "ENTRADAS-TOTAL"
+  },
+  {
+    "NOME_PLANO_CONTA": "RECEITAS NÃO TRIBUTAVEIS"
+  },
+  {
+    "NOME_PLANO_CONTA": "Vendas de Serviços"
+  },
+  {
+    "NOME_PLANO_CONTA": "RECEITAS TRIBUTAVEIS"
+  },
+  {
+    "NOME_PLANO_CONTA": "Rendimento de Aplicação"
+  },
+  {
+    "NOME_PLANO_CONTA": "Juros de Mora"
+  },
+  {
+    "NOME_PLANO_CONTA": "Multa por Atraso"
+  },
+  {
+    "NOME_PLANO_CONTA": "SAÍDAS-TOTAL"
+  },
+  {
+    "NOME_PLANO_CONTA": "DESPESAS OPERACIONAIS"
+  },
+  {
+    "NOME_PLANO_CONTA": "DESPESAS ADMINISTRATIVAS"
+  },
+  {
+    "NOME_PLANO_CONTA": "Aluguel"
+  },
+  {
+    "NOME_PLANO_CONTA": "Internet,TV ou Telefone"
+  },
+  {
+    "NOME_PLANO_CONTA": "Salários"
+  },
+  {
+    "NOME_PLANO_CONTA": "Energia Elétrica"
+  },
+  {
+    "NOME_PLANO_CONTA": "Segurança"
+  },
+  {
+    "NOME_PLANO_CONTA": "Combustível"
+  },
+  {
+    "NOME_PLANO_CONTA": "Veículos"
+  },
+  {
+    "NOME_PLANO_CONTA": "Seguros"
+  },
+  {
+    "NOME_PLANO_CONTA": "Agua"
+  },
+  {
+    "NOME_PLANO_CONTA": "Condomínio"
+  },
+  {
+    "NOME_PLANO_CONTA": "DESPESAS FINANCEIRAS"
+  },
+  {
+    "NOME_PLANO_CONTA": "Férias,Viagens,Praia e Lazer em Geral"
+  },
+  {
+    "NOME_PLANO_CONTA": "Manutenção das Instalações"
+  },
+  {
+    "NOME_PLANO_CONTA": "Frentes e Entregas"
+  },
+  {
+    "NOME_PLANO_CONTA": "Copa & Cozinha"
+  },
+  {
+    "NOME_PLANO_CONTA": "Limpeza e Conservação"
+  },
+  {
+    "NOME_PLANO_CONTA": "DESPESAS PESSOAIS"
+  },
+  {
+    "NOME_PLANO_CONTA": "13º Salário"
+  },
+  {
+    "NOME_PLANO_CONTA": "Treinamento"
+  },
+  {
+    "NOME_PLANO_CONTA": "Acessorios"
+  },
+  {
+    "NOME_PLANO_CONTA": "Multas Fiscais"
+  },
+  {
+    "NOME_PLANO_CONTA": "Comissões"
+  },
+  {
+    "NOME_PLANO_CONTA": "Indenizações"
+  },
+  {
+    "NOME_PLANO_CONTA": "Contribuições"
+  },
+  {
+    "NOME_PLANO_CONTA": "Assinaturas"
+  },
+  {
+    "NOME_PLANO_CONTA": "Viagens e estadas"
+  },
+  {
+    "NOME_PLANO_CONTA": "Depreciações e Amortizações"
+  },
+  {
+    "NOME_PLANO_CONTA": "Doações Para igreja"
+  },
+  {
+    "NOME_PLANO_CONTA": "Bens de Pequeno Valor"
+  },
+  {
+    "NOME_PLANO_CONTA": "Passagens"
+  },
+  {
+    "NOME_PLANO_CONTA": "Premiações"
+  },
+  {
+    "NOME_PLANO_CONTA": "Transferencia de Valores(Reajuste)"
+  },
+  {
+    "NOME_PLANO_CONTA": "Alimentação"
+  },
+  {
+    "NOME_PLANO_CONTA": "Publicidade"
+  },
+  {
+    "NOME_PLANO_CONTA": "Serviços terceirizados"
+  },
+  {
+    "NOME_PLANO_CONTA": "Locação de Veículos"
+  },
+  {
+    "NOME_PLANO_CONTA": "Transporte"
+  },
+  {
+    "NOME_PLANO_CONTA": "Vale Alimentação"
+  },
+  {
+    "NOME_PLANO_CONTA": "Rescisões"
+  },
+  {
+    "NOME_PLANO_CONTA": "Aquisição de Patrimônio"
+  },
+  {
+    "NOME_PLANO_CONTA": "Vendas de Produtos"
+  },
+  {
+    "NOME_PLANO_CONTA": "Complemento Salarial"
+  },
+  {
+    "NOME_PLANO_CONTA": "Honorários"
+  },
+  {
+    "NOME_PLANO_CONTA": "Despesas com Boletos Bancários"
+  },
+  {
+    "NOME_PLANO_CONTA": "Cópias e Duplicações"
+  },
+  {
+    "NOME_PLANO_CONTA": "Correios - Sedex"
+  },
+  {
+    "NOME_PLANO_CONTA": "Manutenção de Equipamentos "
+  },
+  {
+    "NOME_PLANO_CONTA": "Jornais /Livros /Revistas"
+  },
+  {
+    "NOME_PLANO_CONTA": "Horas Extras"
+  },
+  {
+    "NOME_PLANO_CONTA": "Pró-labore "
+  },
+  {
+    "NOME_PLANO_CONTA": "Distribuição de Lucros"
+  },
+  {
+    "NOME_PLANO_CONTA": "Gastos com medicamento e Saúde"
+  },
+  {
+    "NOME_PLANO_CONTA": "ENCARGOS SOCIAIS"
+  },
+  {
+    "NOME_PLANO_CONTA": "IPTU"
+  },
+  {
+    "NOME_PLANO_CONTA": "Imposto de Renda I.R.P.J"
+  },
+  {
+    "NOME_PLANO_CONTA": "Contribuição Social"
+  },
+  {
+    "NOME_PLANO_CONTA": "Cofins"
+  },
+  {
+    "NOME_PLANO_CONTA": "Simples Federal"
+  },
+  {
+    "NOME_PLANO_CONTA": "ISS - Imposto sobre Serviços"
+  },
+  {
+    "NOME_PLANO_CONTA": "FGTS - Fundo de Garantia"
+  },
+  {
+    "NOME_PLANO_CONTA": "INSS - Previdência Social"
+  },
+  {
+    "NOME_PLANO_CONTA": "Fornecedores"
+  },
+  {
+    "NOME_PLANO_CONTA": "CPMF - Imposto sobre Movimentação Financeira"
+  },
+  {
+    "NOME_PLANO_CONTA": "PIS"
+  },
+  {
+    "NOME_PLANO_CONTA": "OUTRAS"
+  },
+  {
+    "NOME_PLANO_CONTA": "OUTRAS DESPESAS"
+  },
+  {
+    "NOME_PLANO_CONTA": "Uso e Consumo"
+  },
+  {
+    "NOME_PLANO_CONTA": "Suprimento"
+  },
+  {
+    "NOME_PLANO_CONTA": "Transferência entre Contas"
+  },
+  {
+    "NOME_PLANO_CONTA": "Emprestimo R"
+  },
+  {
+    "NOME_PLANO_CONTA": "Contribuições"
+  },
+  {
+    "NOME_PLANO_CONTA": "Cursos,Faculdade,Escola,ETC..."
+  },
+  {
+    "NOME_PLANO_CONTA": "Vóto - Doação e ofertas para Igreja pagos em boletos e parcelado"
+  },
+  {
+    "NOME_PLANO_CONTA": "Vale Transporte"
+  },
+  {
+    "NOME_PLANO_CONTA": "OUTROS RECEBIMENTOS"
+  },
+  {
+    "NOME_PLANO_CONTA": "Ajuste"
+  },
+  {
+    "NOME_PLANO_CONTA": "Movimentação Bancaria"
+  },
+  {
+    "NOME_PLANO_CONTA": "Gasto com PET(Animais de estimação)"
+  },
+  {
+    "NOME_PLANO_CONTA": "Anel de oficial  - Simbolo da igreja"
+  },
+  {
+    "NOME_PLANO_CONTA": "Outras saidas"
+  },
+  {
+    "NOME_PLANO_CONTA": "PERDA OU ROUBO"
+  },
+  {
+    "NOME_PLANO_CONTA": "Perda"
+  },
+  {
+    "NOME_PLANO_CONTA": "Roubo"
+  },
+  {
+    "NOME_PLANO_CONTA": "Gasto não identificado"
+  },
+  {
+    "NOME_PLANO_CONTA": "DESPESAS COM A IGREJA - DOAÇÕES"
+  },
+  {
+    "NOME_PLANO_CONTA": "Doaçoes"
+  },
+  {
+    "NOME_PLANO_CONTA": "Dizimo(Doações para igreja de 10% do valor liquido recebido)"
+  },
+  {
+    "NOME_PLANO_CONTA": "Oferta - Doação voluntaria para igreja"
+  },
+  {
+    "NOME_PLANO_CONTA": "Perda ou roubo"
+  },
+  {
+    "NOME_PLANO_CONTA": "Gás"
+  },
+  {
+    "NOME_PLANO_CONTA": "Vale Alimentação(Saida)"
+  },
+  {
+    "NOME_PLANO_CONTA": "Vale Refeição"
+  },
+  {
+    "NOME_PLANO_CONTA": "Pag. Ferias"
+  },
+  {
+    "NOME_PLANO_CONTA": "IRRF (Imposto sobre a renda retido na fonte)"
+  },
+  {
+    "NOME_PLANO_CONTA": "Prestação Credito Imobiliario"
+  },
+  {
+    "NOME_PLANO_CONTA": "Adiantamento Salárial"
+  },
+  {
+    "NOME_PLANO_CONTA": "Emprestimo D"
+  },
+  {
+    "NOME_PLANO_CONTA": "Devolução de mercadoria"
+  },
+  {
+    "NOME_PLANO_CONTA": "INVESTIMENTOS"
+  },
+  {
+    "NOME_PLANO_CONTA": "Tesouro IPCA+ 2026"
+  },
+  {
+    "NOME_PLANO_CONTA": "Tesouro IPCA+ 2035"
+  },
+  {
+    "NOME_PLANO_CONTA": "Aplicação LCI"
+  },
+  {
+    "NOME_PLANO_CONTA": "Aplicação CDB"
+  },
+  {
+    "NOME_PLANO_CONTA": "Prefixado 2026"
+  },
+  {
+    "NOME_PLANO_CONTA": "Tesouro Direto Prefixado 2025"
+  },
+  {
+    "NOME_PLANO_CONTA": "Horas lic.medica diurna"
+  },
+  {
+    "NOME_PLANO_CONTA": "Gastos com filho"
+  },
+  {
+    "NOME_PLANO_CONTA": "Rentabilidade investimento"
+  },
+  {
+    "NOME_PLANO_CONTA": "DESPESAS COM DEPENDENTES"
+  },
+  {
+    "NOME_PLANO_CONTA": "Doações recebidas"
+  },
+  {
+    "NOME_PLANO_CONTA": "Restituição IRRF"
+  },
+  {
+    "NOME_PLANO_CONTA": "Despesas com exames - Filho"
+  },
+  {
+    "NOME_PLANO_CONTA": "Farmacia e Medicamenos - Filho"
+  },
+  {
+    "NOME_PLANO_CONTA": "Despesas hospitala - Filho"
+  },
+  {
+    "NOME_PLANO_CONTA": "Despesas alimenticias - Filho"
+  },
+  {
+    "NOME_PLANO_CONTA": "Plano de saúde - Filho"
+  },
+  {
+    "NOME_PLANO_CONTA": "Despesas conjuge"
+  },
+  {
+    "NOME_PLANO_CONTA": "Rendimentos Isentos - Poupança"
+  }
+]

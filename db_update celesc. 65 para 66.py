@@ -3,20 +3,14 @@ db = get_db()
 
 lc = ler_configuracao()
 
-# Configurações do banco de dados
-DIR_DADOS = lc['DIR_DADOS']
-USUARIO_BD = lc['USUARIO_BD']
-SENHA_BD = lc['SENHA_BD']
-SERVER = lc['SERVER']
-
 
 
 # Conectar ao banco de dados
 conn = db.connect(
-    host=SERVER,
-    database=DIR_DADOS,
-    user=USUARIO_BD,
-    password=SENHA_BD
+    host=lc['SERVER'],
+    database=lc['DIR_DADOS'],
+    user=lc['USUARIO_BD'],
+    password=lc['SENHA_BD']
 )
 c = conn.cursor() 
 
@@ -28,7 +22,7 @@ try:
     SET Z.CHAVE_REL = (
         SELECT FIRST 1 X.COD_COMPRA
         FROM COMPRA X
-        WHERE X.COD_COMPRA > 768
+        WHERE X.COD_COMPRA >= 1023
         AND X.COD_FORNECEDOR = Z.COD_FORNECEDOR
         AND X.VALOR_LIQUIDO_COMPRA = Z.VALOR_PREVISTO
         AND Z.TIPO_REL = 'A'
@@ -37,7 +31,7 @@ try:
     Z.NUM_DOC = (
         SELECT FIRST 1 X.NUMERO_NF
         FROM COMPRA X
-        WHERE X.COD_COMPRA > 768
+        WHERE X.COD_COMPRA >= 1023
         AND X.COD_FORNECEDOR = Z.COD_FORNECEDOR
         AND X.VALOR_LIQUIDO_COMPRA = Z.VALOR_PREVISTO
         AND Z.TIPO_REL = 'A'
@@ -46,7 +40,7 @@ try:
     WHERE EXISTS (
         SELECT 1
         FROM COMPRA X
-        WHERE X.COD_COMPRA > 768
+        WHERE X.COD_COMPRA >= 1023
         AND X.COD_FORNECEDOR = Z.COD_FORNECEDOR
         AND X.VALOR_LIQUIDO_COMPRA = Z.VALOR_PREVISTO
         AND Z.TIPO_REL = 'A'
@@ -60,13 +54,13 @@ except db.fbcore.DatabaseError as e:
     print(f"Erro ao executar o update em LANC_FINANCEIRO: {e}")
 
 # Identificar os códigos de compra atualizados
-try:
+try: 
     select_updated_cod_compra_query = """
     --sql
     SELECT DISTINCT X.COD_COMPRA
     FROM COMPRA X
     INNER JOIN LANC_FINANCEIRO Z ON X.COD_FORNECEDOR = Z.COD_FORNECEDOR
-    WHERE X.COD_COMPRA >= 768
+    WHERE X.COD_COMPRA >= 1023
     AND X.COD_FORNECEDOR = 22
     AND X.VALOR_LIQUIDO_COMPRA = Z.VALOR_PREVISTO
     AND Z.TIPO_REL = 'C'
