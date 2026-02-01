@@ -4,8 +4,8 @@ import re
 import sys
 from pathlib import Path
 from typing import List, Tuple
-import copyright_delean 
-copyright_delean.copyright_delean()
+# import copyright_delean 
+# copyright_delean.copyright_delean()
 
 try:
     import pdfplumber

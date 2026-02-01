@@ -72,11 +72,40 @@ def index():
     else:
         results = executar_consulta()
 
-    # Gerar os gráficos
+    # Gerar os gráficos e calcular aumentos
+    dados_formatados = []
     if results:
         datas = [datetime.strptime(str(result[0]), '%Y-%m-%d %H:%M:%S') for result in results]
         valores = [float(result[1]) for result in results]
         percentuais = [0] + [(valores[i] - valores[i-1]) / valores[i-1] * 100 for i in range(1, len(valores))]
+        aumentos = [0] + [(valores[i] - valores[i-1]) for i in range(1, len(valores))]
+        
+        # Formatar dados para exibição na tabela
+        for i, result in enumerate(results):
+            dados_formatados.append({
+                'data': result[0],
+                'valor': f"{valores[i]:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.'),
+                'aumento_rs': f"{aumentos[i]:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.') if i > 0 else '-',
+                'aumento_perc': f"{percentuais[i]:.2f}".replace('.', ',') if i > 0 else '-'
+            })
+        
+        # Calcular resumo (primeiro e último registro)
+        if len(valores) >= 2:
+            aumento_total = valores[-1] - valores[0]
+            percentual_total = ((valores[-1] - valores[0]) / valores[0]) * 100
+            soma_aumentos = sum(aumentos)  # Soma de todos os aumentos mensais
+            resumo = {
+                'primeira_data': results[0][0],
+                'primeiro_valor': f"{valores[0]:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.'),
+                'ultima_data': results[-1][0],
+                'ultimo_valor': f"{valores[-1]:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.'),
+                'aumento_total': f"{aumento_total:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.'),
+                'percentual_total': f"{percentual_total:.2f}".replace('.', ','),
+                'soma_aumentos': f"{soma_aumentos:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.'),
+                'qtd_meses': len(valores) - 1
+            }
+        else:
+            resumo = None
 
         # Gráfico de valores pagos
         plt.figure(figsize=(10, 5))
@@ -110,11 +139,12 @@ def index():
         graph_percentage = base64.b64encode(buf.read()).decode('utf-8')
         plt.close()
 
-    return render_template('grafico_juros.html', form=form, results=results, graph_values=graph_values, graph_percentage=graph_percentage)
+    resumo = resumo if 'resumo' in dir() else None
+    return render_template('grafico_juros.html', form=form, results=results, dados_formatados=dados_formatados, graph_values=graph_values, graph_percentage=graph_percentage, resumo=resumo)
 
 def open_browser():
     webbrowser.open_new('http://127.0.0.1:5000')
 
 if __name__ == '__main__':
     threading.Timer(1.25, open_browser).start()  # Abre o navegador após 1.25 segundos
-    app.run(debug=False)
+    app.run(debug=False) 

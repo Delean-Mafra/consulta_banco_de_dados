@@ -112,7 +112,6 @@ def api_buscar_planos():
     c = conn.cursor()
     
     query = """
-    --sql
     SELECT DISTINCT PC.NOME_PLANO_CONTA
     FROM PLANO_CONTA PC
     WHERE PC.TIPO_PLANO_CONTA = 'D'
