@@ -101,7 +101,7 @@ def buscar_lancamento_bd(valor, data_sql, cod_conta=25):
         
         if valor < 0:
             # Débito - buscar em VALOR_SAIDA
-            # Converter para Decimal para compatibilidade com Firebird
+            # Converter para Decimal para compatibilidade com Banco de dados
             valor_decimal = Decimal(str(abs(valor)))
             
             query = """

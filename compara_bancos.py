@@ -171,7 +171,7 @@ def get_field_type_string(field_info):
     field_scale = field_info[8]
     char_length = field_info[9]
     
-    # Mapeamento dos tipos do Firebird
+    # Mapeamento dos tipos
     type_map = {
         7: "SMALLINT",
         8: "INTEGER", 

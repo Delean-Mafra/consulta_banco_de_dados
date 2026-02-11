@@ -83,6 +83,37 @@ def find_data_doc(lines: List[str]) -> str | None:
     return m.group(1) if m else None
 
 
+def find_data_vencimento(lines: List[str]) -> str | None:
+    """Procura a data de vencimento no boleto de condomínio."""
+    # Procura linha "Vencimento" e pega a data após
+    for i, l in enumerate(lines):
+        if re.search(r'^\s*Vencimento\s*$', l, re.IGNORECASE):
+            # olhar mesma linha e 3 seguintes
+            window = lines[i:i+4]
+            for w in window:
+                dm = REGEX_DATA.search(w)
+                if dm:
+                    return dm.group(1)
+    
+    # Fallback 1: linha que contém "Vencimento" seguido de data
+    for l in lines:
+        if re.search(r'Vencimento', l, re.IGNORECASE):
+            dm = REGEX_DATA.search(l)
+            if dm:
+                return dm.group(1)
+    
+    # Fallback 2: procura por padrão "Data de Vencimento"
+    for i, l in enumerate(lines):
+        if re.search(r'Data de Vencimento', l, re.IGNORECASE):
+            window = lines[i:i+4]
+            for w in window:
+                dm = REGEX_DATA.search(w)
+                if dm:
+                    return dm.group(1)
+    
+    return None
+
+
 def find_valor_documento(lines: List[str]) -> str | None:
     # Primeiro tenta encontrar próximo ao label "Valor Documento"
     for i, l in enumerate(lines):
@@ -240,6 +271,8 @@ def montar_output(dados: dict) -> str:
         partes.append(f"Linha Digitável: {dados['linha_digitavel']}")
     if dados.get("data_documento"):
         partes.append(f"Data do Documento: {dados['data_documento']}")
+    if dados.get("data_vencimento"):
+        partes.append(f"Data de Vencimento: {dados['data_vencimento']}")
     if dados.get("nosso_numero"):
         partes.append(f"Nosso Número: {dados['nosso_numero']}")
     if dados.get("valor_documento"):
@@ -264,6 +297,7 @@ def process_pdf(pdf_path: Path, output_path: Path | None = None) -> Path:
     dados = {
         "linha_digitavel": find_linha_digitavel(text),
         "data_documento": find_data_doc(lines),
+        "data_vencimento": find_data_vencimento(lines),
         "nosso_numero": find_nosso_numero(lines),
         "valor_documento": find_valor_documento(lines),
         "numero_documento": find_numero_documento(lines),

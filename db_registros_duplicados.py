@@ -68,7 +68,7 @@ def find_duplicate_groups(match_date_only=False, start_date=None, end_date=None,
     # montar filtro de datas
     date_filter = ""
     if start_date and end_date:
-        # Firebird pode aceitar formato 'YYYY-MM-DD' como literal; seguimos seu padrão
+        # Pode aceitar formato 'YYYY-MM-DD' como literal; seguimos seu padrão
         ds = start_date.strftime("%Y-%m-%d")
         de = end_date.strftime("%Y-%m-%d")
         # quando match_date_only usamos CAST para comparar como DATE entre limites
