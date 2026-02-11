@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <title>Duplicados - Lançamentos</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; margin: 18px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+    th, td { border: 1px solid #ddd; padding: 8px; font-size: 13px; }
+    th { background: #f4f4f4; text-align: left; }
+    .group { background: #fafafa; }
+    .small { font-size: 12px; color: #666; }
+    .controls { margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+  <h2>Relatório de Lançamentos Duplicados</h2>
+  <form method="post">
+    <div class="controls">
+      Plano de Conta (nome, separado por vírgula):<br/>
+      <input type="text" name="plano_conta" style="width:50%" value="{{ form.plano_conta.data or '' }}"/><br/><br/>
+      Data Início: <input type="date" name="data_inicio" value="{{ form.data_inicio.data or '' }}"/>
+      Data Fim: <input type="date" name="data_fim" value="{{ form.data_fim.data or '' }}"/>
+      <label style="margin-left:12px"><input type="checkbox" name="match_date_only" {% if form.match_date_only.data %}checked{% endif %}/> comparar só a data (ignorar hora)</label>
+      <label style="margin-left:12px"><input type="checkbox" name="include_null_fornecedor" {% if form.include_null_fornecedor.data %}checked{% endif %}/> incluir fornecedor NULL como chave válida</label>
+      <br/><br/>
+      <button type="submit">Buscar duplicados</button>
+    </div>
+  </form>
+
+  {% if groups %}
+    <p class="small">Foram encontrados {{ groups|length }} grupos duplicados. Cada grupo lista os lançamentos (COD_FIN) que participam.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Data (ou Data/Hora)</th>
+          <th>Valor Pago</th>
+          <th>Plano (COD / Nome)</th>
+          <th>Fornecedor (COD / Nome)</th>
+          <th>QTD</th>
+          <th>COD_FIN (lista)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for g in groups %}
+        <tr class="group">
+          <td>{{ g.key_display }}</td>
+          <td>R$ {{ "%.2f"|format(g.valor) }}</td>
+          <td>{{ g.cod_plano }} / {{ g.nome_plano or '' }}</td>
+          <td>{{ g.cod_fornecedor or '' }} / {{ g.nome_fornecedor or '' }}</td>
+          <td>{{ g.count }}</td>
+          <td>{{ g.cod_fins|join(', ') }}</td>
+        </tr>
+        <tr>
+          <td colspan="6">
+            <strong>Detalhes:</strong>
+            <table style="width:100%; margin-top:8px;">
+              <thead><tr><th>COD_FIN</th><th>DATA_PAGAMENTO</th><th>VALOR_PAGO</th><th>COD_PLANO_CONTA</th><th>COD_FORNECEDOR</th></tr></thead>
+              <tbody>
+                {% for r in g.records %}
+                <tr>
+                  <td>{{ r.COD_FIN }}</td>
+                  <td>{{ r.DATA_PAGAMENTO }}</td>
+                  <td>R$ {{ "%.2f"|format(r.VALOR_PAGO) }}</td>
+                  <td>{{ r.COD_PLANO_CONTA }}</td>
+                  <td>{{ r.COD_FORNECEDOR or '' }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Nenhum duplicado encontrado (ou ainda não pesquisado).</p>
+  {% endif %}
+</body>
+</html>

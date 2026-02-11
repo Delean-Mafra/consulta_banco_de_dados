@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dados Extraídos - {{ processed_data.tipo_boleto or 'Boleto' }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #28a745;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .tipo-boleto {
+            text-align: center;
+            color: #007bff;
+            font-size: 14px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .success-message {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .data-container {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            white-space: pre-line;
+            line-height: 1.6;
+        }
+        .field-container {
+            background-color: #ffffff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .field-content {
+            flex-grow: 1;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #333;
+        }
+        .field-label {
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 5px;
+        }
+        .field-value {
+            font-size: 16px;
+            color: #007bff;
+            font-weight: bold;
+        }
+        .copy-field-btn {
+            background-color: #17a2b8;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 15px;
+            font-size: 12px;
+            min-width: 80px;
+        }
+        .copy-field-btn:hover {
+            background-color: #138496;
+        }
+        .rateio-container {
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .rateio-item {
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .rateio-desc {
+            flex-grow: 1;
+            font-weight: bold;
+            color: #495057;
+        }
+        .rateio-valor {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .actions {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            margin: 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-success:hover {
+            background-color: #1e7e34;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+        .file-info {
+            background-color: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .copy-btn {
+            background-color: #17a2b8;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        .copy-btn:hover {
+            background-color: #138496;
+        }
+        .copied {
+            background-color: #28a745 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ Dados Extraídos com Sucesso!</h1>
+        
+        {% if processed_data.tipo_boleto %}
+        <div class="tipo-boleto">
+            📋 {{ processed_data.tipo_boleto }}
+        </div>
+        {% endif %}
+        
+        <div class="success-message">
+            <strong>🎉 Processamento concluído!</strong><br>
+            Os dados do boleto foram extraídos e estão prontos para uso.
+        </div>
+
+        {% if filename %}
+        <div class="file-info">
+            <strong>📄 Arquivo processado:</strong> {{ filename }}<br>
+            {% if output_filename %}
+            <strong>📝 Arquivo gerado:</strong> {{ output_filename }}
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if processed_data %}
+        <!-- Campos principais com botões de cópia individuais -->
+        {% if processed_data.linha_digitavel %}
+        <div class="field-container">
+            <div class="field-content">
+                <div class="field-label">Linha Digitável:</div>
+                <div class="field-value">{{ processed_data.linha_digitavel }}</div>
+            </div>
+            <button class="copy-field-btn" onclick="copyFieldToClipboard('{{ processed_data.linha_digitavel }}', this)">📋 Copiar</button>
+        </div>
+        {% endif %}
+
+        {% if processed_data.data_documento %}
+        <div class="field-container">
+            <div class="field-content">
+                <div class="field-label">Data do Documento:</div>
+                <div class="field-value">{{ processed_data.data_documento }}</div>
+            </div>
+            <button class="copy-field-btn" onclick="copyFieldToClipboard('{{ processed_data.data_documento }}', this)">📋 Copiar</button>
+        </div>
+        {% elif processed_data.data_emissao %}
+        <div class="field-container">
+            <div class="field-content">
+                <div class="field-label">Data de Emissão:</div>
+                <div class="field-value">{{ processed_data.data_emissao }}</div>
+            </div>
+            <button class="copy-field-btn" onclick="copyFieldToClipboard('{{ processed_data.data_emissao }}', this)">📋 Copiar</button>
+        </div>
+        {% endif %}
+
+        {% if processed_data.data_vencimento %}
+        <div class="field-container">
+            <div class="field-content">
+                <div class="field-label">Data de Vencimento:</div>
+                <div class="field-value">{{ processed_data.data_vencimento }}</div>
+            </div>
+            <button class="copy-field-btn" onclick="copyFieldToClipboard('{{ processed_data.data_vencimento }}', this)">📋 Copiar</button>
+        </div>
+        {% endif %}
+
+        {% if processed_data.nosso_numero %}
+        <div class="field-container">
+            <div class="field-content">
+                <div class="field-label">Nosso Número:</div>
+                <div class="field-value">{{ processed_data.nosso_numero }}</div>
+            </div>
+            <button class="copy-field-btn" onclick="copyFieldToClipboard('{{ processed_data.nosso_numero }}', this)">📋 Copiar</button>
+        </div>
+        {% endif %}
+
+        {% if processed_data.valor_documento %}
+        <div class="field-container">
+            <div class="field-content">
+                <div class="field-label">Valor Documento:</div>
+                <div class="field-value">{{ processed_data.valor_documento }}</div>
+            </div>
+            <button class="copy-field-btn" onclick="copyFieldToClipboard('{{ processed_data.valor_documento }}', this)">📋 Copiar</button>
+        </div>
+        {% elif processed_data.valor_total %}
+        <div class="field-container">
+            <div class="field-content">
+                <div class="field-label">Valor Total a Pagar:</div>
+                <div class="field-value">R$ {{ processed_data.valor_total }}</div>
+            </div>
+            <button class="copy-field-btn" onclick="copyFieldToClipboard('{{ processed_data.valor_total }}', this)">📋 Copiar</button>
+        </div>
+        {% endif %}
+
+        {% if processed_data.numero_documento %}
+        <div class="field-container">
+            <div class="field-content">
+                <div class="field-label">Número do Documento:</div>
+                <div class="field-value">{{ processed_data.numero_documento }}</div>
+            </div>
+            <button class="copy-field-btn" onclick="copyFieldToClipboard('{{ processed_data.numero_documento }}', this)">📋 Copiar</button>
+        </div>
+        {% elif processed_data.demonstrativo_numero %}
+        <div class="field-container">
+            <div class="field-content">
+                <div class="field-label">Demonstrativo Nro.:</div>
+                <div class="field-value">{{ processed_data.demonstrativo_numero }}</div>
+            </div>
+            <button class="copy-field-btn" onclick="copyFieldToClipboard('{{ processed_data.demonstrativo_numero }}', this)">📋 Copiar</button>
+        </div>
+        {% endif %}
+
+        {% if processed_data.mes_referencia %}
+        <div class="field-container">
+            <div class="field-content">
+                <div class="field-label">Mês de Referência:</div>
+                <div class="field-value">{{ processed_data.mes_referencia }}</div>
+            </div>
+            <button class="copy-field-btn" onclick="copyFieldToClipboard('{{ processed_data.mes_referencia }}', this)">📋 Copiar</button>
+        </div>
+        {% endif %}
+
+        {% if processed_data.codigo_cliente %}
+        <div class="field-container">
+            <div class="field-content">
+                <div class="field-label">Código do Cliente:</div>
+                <div class="field-value">{{ processed_data.codigo_cliente }}</div>
+            </div>
+            <button class="copy-field-btn" onclick="copyFieldToClipboard('{{ processed_data.codigo_cliente }}', this)">📋 Copiar</button>
+        </div>
+        {% endif %}
+
+        {% if processed_data.consumo_gas %}
+        <div class="rateio-container">
+            <h3 style="margin-top: 0; color: #495057;">⛽ Consumo de Gás:</h3>
+            {% if processed_data.consumo_gas.volume_m3 %}
+            <div class="rateio-item">
+                <div class="rateio-desc">Volume (m³)</div>
+                <div class="rateio-valor">{{ processed_data.consumo_gas.volume_m3 }}</div>
+                <button class="copy-field-btn" onclick="copyFieldToClipboard('{{ processed_data.consumo_gas.volume_m3 }}', this)">📋 Copiar</button>
+            </div>
+            {% endif %}
+            {% if processed_data.consumo_gas.volume_kg %}
+            <div class="rateio-item">
+                <div class="rateio-desc">Volume (kg)</div>
+                <div class="rateio-valor">{{ processed_data.consumo_gas.volume_kg }}</div>
+                <button class="copy-field-btn" onclick="copyFieldToClipboard('{{ processed_data.consumo_gas.volume_kg }}', this)">📋 Copiar</button>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Seção de Rateios -->
+        {% if processed_data.rateios %}
+        <div class="rateio-container">
+            <h3 style="margin-top: 0; color: #495057;">📊 Rateios:</h3>
+            {% for rateio in processed_data.rateios %}
+            <div class="rateio-item">
+                <div class="rateio-desc">{{ rateio.descricao }}</div>
+                <div class="rateio-valor">R$ {{ rateio.valor }}</div>
+                <button class="copy-field-btn" onclick="copyFieldToClipboard('{{ rateio.valor }}', this)">📋 Copiar</button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% else %}
+        <!-- Fallback para dados não processados -->
+        <div class="actions">
+            <button class="copy-btn" onclick="copyToClipboard()">📋 Copiar Todos os Dados</button>
+        </div>
+
+        <div class="data-container" id="extractedData">{{ data }}</div>
+        {% endif %}
+
+        <!-- Seção de Atualização do Banco de Dados -->
+        <div class="file-info" style="background-color: #fff3cd; border-color: #ffc107; margin-top: 30px;">
+            <h3 style="color: #856404;">🗄️ Atualizar Banco de Dados</h3>
+            <p>Informe o <strong>COD_FIN</strong> do registro que deseja atualizar com os dados do boleto:</p>
+            
+            <div style="margin: 20px 0;">
+                <label for="cod_fin_input" style="display: block; margin-bottom: 5px; font-weight: bold;">COD_FIN:</label>
+                <input type="number" id="cod_fin_input" placeholder="Digite o COD_FIN" 
+                       style="width: 200px; padding: 8px; border: 2px solid #ccc; border-radius: 5px; font-size: 16px;">
+                <button onclick="atualizarBanco()" class="btn btn-success" style="margin-left: 10px;">
+                    💾 Atualizar Banco
+                </button>
+            </div>
+            
+            <div id="update_result" style="margin-top: 15px; display: none; padding: 15px; border-radius: 5px;"></div>
+            
+            <details style="margin-top: 15px;">
+                <summary style="cursor: pointer; font-weight: bold; color: #495057;">ℹ️ Campos que serão atualizados</summary>
+                <ul style="margin-top: 10px; color: #6c757d;">
+                    <li>LINHA_DIGITAVEL</li>
+                    <li>DATA_VENCIMENTO</li>
+                    <li>DATA_EMISSAO</li>
+                    <li>VALOR_PREVISTO</li>
+                    <li>VALOR_PREVISTO_RESTANTE</li>
+                    <li>VALOR_A_AMORTIZAR</li>
+                    <li>VALOR_PRESENTE</li>
+                    <li>NUM_DOC</li>
+                    <li>NOSSO_NUMERO</li>
+                </ul>
+            </details>
+        </div>
+
+        <div class="actions">
+            {% if output_filename %}
+            <a href="/download/{{ output_filename }}" class="btn btn-success">
+                💾 Baixar Arquivo TXT
+            </a>
+            {% endif %}
+            <a href="/" class="btn btn-primary">
+                🔄 Processar Outro Boleto
+            </a>
+            <button class="btn btn-secondary" onclick="window.print()">
+                🖨️ Imprimir
+            </button>
+        </div>
+
+        <div class="file-info">
+            <h3>ℹ️ Informações:</h3>
+            <ul>
+                <li>Os dados foram extraídos automaticamente do PDF</li>
+                <li>Você pode copiar os dados acima ou baixar o arquivo TXT</li>
+                <li>O arquivo TXT é salvo automaticamente no mesmo local do PDF original</li>
+                <li>Verifique se todos os dados estão corretos antes de usar</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function copyFieldToClipboard(text, button) {
+            navigator.clipboard.writeText(text).then(function() {
+                const originalText = button.textContent;
+                button.textContent = '✅ Copiado!';
+                button.style.backgroundColor = '#28a745';
+                
+                setTimeout(function() {
+                    button.textContent = originalText;
+                    button.style.backgroundColor = '#17a2b8';
+                }, 2000);
+            }).catch(function(err) {
+                alert('Erro ao copiar: ' + err);
+            });
+        }
+
+        function copyToClipboard() {
+            const data = document.getElementById('extractedData').textContent;
+            navigator.clipboard.writeText(data).then(function() {
+                const btn = document.querySelector('.copy-btn');
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copiado!';
+                btn.classList.add('copied');
+                
+                setTimeout(function() {
+                    btn.textContent = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(function(err) {
+                alert('Erro ao copiar: ' + err);
+            });
+        }
+
+        function atualizarBanco() {
+            const codFin = document.getElementById('cod_fin_input').value;
+            const resultDiv = document.getElementById('update_result');
+            
+            if (!codFin) {
+                resultDiv.style.display = 'block';
+                resultDiv.style.backgroundColor = '#f8d7da';
+                resultDiv.style.borderColor = '#f5c6cb';
+                resultDiv.style.color = '#721c24';
+                resultDiv.innerHTML = '⚠️ Por favor, informe o COD_FIN';
+                return;
+            }
+            
+            // Mostrar loading
+            resultDiv.style.display = 'block';
+            resultDiv.style.backgroundColor = '#cce5ff';
+            resultDiv.style.borderColor = '#b3d9ff';
+            resultDiv.style.color = '#004085';
+            resultDiv.innerHTML = '⏳ Atualizando banco de dados...';
+            
+            // Criar FormData
+            const formData = new FormData();
+            formData.append('cod_fin', codFin);
+            
+            // Fazer requisição
+            fetch('/atualizar_banco', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    resultDiv.style.backgroundColor = '#d4edda';
+                    resultDiv.style.borderColor = '#c3e6cb';
+                    resultDiv.style.color = '#155724';
+                    resultDiv.innerHTML = '✅ ' + data.message;
+                } else {
+                    resultDiv.style.backgroundColor = '#f8d7da';
+                    resultDiv.style.borderColor = '#f5c6cb';
+                    resultDiv.style.color = '#721c24';
+                    resultDiv.innerHTML = '❌ ' + data.message;
+                }
+            })
+            .catch(error => {
+                resultDiv.style.backgroundColor = '#f8d7da';
+                resultDiv.style.borderColor = '#f5c6cb';
+                resultDiv.style.color = '#721c24';
+                resultDiv.innerHTML = '❌ Erro ao atualizar: ' + error;
+            });
+        }
+        
+        // Permitir atualização pressionando Enter no campo COD_FIN
+        document.addEventListener('DOMContentLoaded', function() {
+            const codFinInput = document.getElementById('cod_fin_input');
+            if (codFinInput) {
+                codFinInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        atualizarBanco();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
