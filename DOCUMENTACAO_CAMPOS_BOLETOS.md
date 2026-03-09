@@ -200,7 +200,7 @@ Para verificar se tudo está funcionando:
 
 ```python
 import sys
-sys.path.insert(0, r'\Python\complementos\fiirebird')
+sys.path.insert(0, r'\Python\complementos\banco_de_dados')
 
 from db_app_boleto import parse_extracted_data
 
@@ -233,4 +233,5 @@ print(f"valor_documento: {resultado.get('valor_documento')}")
 
 **Data: 10/02/2026**  
 **Status: ✅ Todos os campos implementados e testados**
+
 
