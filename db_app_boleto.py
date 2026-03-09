@@ -18,6 +18,46 @@ from boleto_faculdade import process_pdf as process_pdf_faculdade
 from boleto_gas import process_pdf as process_pdf_gas
 from db_lerconfiguracao import ler_configuracao, get_db
 import copyright_delean 
+
+
+
+
+def desbloquear_pdf(input_pdf):
+    # Abrir o arquivo PDF de entrada com a opção de permitir sobrescrever o arquivo
+    with pikepdf.open(input_pdf, allow_overwriting_input=True) as pdf:
+        # Salvar o PDF desbloqueado, sobrescrevendo o original
+        pdf.save(input_pdf)
+
+# Solicitar o caminho da pasta contendo os PDFs
+pasta_pdf = r'C:\Users\Acer\Downloads'
+
+# Verificar se a pasta existe
+if os.path.exists(pasta_pdf) and os.path.isdir(pasta_pdf):
+    # Percorrer todos os arquivos na pasta
+    for nome_arquivo in os.listdir(pasta_pdf):
+        # Montar o caminho completo do arquivo
+        caminho_arquivo = os.path.join(pasta_pdf, nome_arquivo)
+        # Verificar se é um arquivo PDF
+        if os.path.isfile(caminho_arquivo) and caminho_arquivo.lower().endswith('.pdf'):
+            try:
+                # Desbloquear o PDF
+                desbloquear_pdf(caminho_arquivo)
+                print(f'O arquivo {nome_arquivo} foi desbloqueado com sucesso!')
+            except Exception as e:
+                print(f'Erro ao desbloquear o arquivo {nome_arquivo}: {e}')
+else:
+    print(f'A pasta {pasta_pdf} não foi encontrada.')
+
+print('Todos os PDFs foram processados!')
+
+
+
+
+
+
+
+
+
 copyright_delean.copyright_delean()
 
 app = Flask(__name__)
@@ -47,23 +87,48 @@ def desbloquear_pdf(input_pdf):
     """Desbloqueia PDF se estiver protegido por senha ou restrições.
     
     Usa pikepdf para remover restrições de segurança do PDF.
-    O arquivo é sobrescrito com a versão desbloqueada.
+    Sobrescreve o arquivo original com a versão desbloqueada.
+    Retorna o caminho do arquivo ou None se falhar.
     """
+    import shutil
+    
     try:
-        # Tenta abrir o PDF com permissão para sobrescrever
-        with pikepdf.open(input_pdf, allow_overwriting_input=True) as pdf:
-            # Salva o PDF removendo quaisquer restrições de segurança
-            pdf.save(input_pdf)
-        print(f'PDF desbloqueado com sucesso: {input_pdf}')
-        return True
-    except pikepdf.PasswordError:
-        # PDF protegido por senha que não pode ser aberta sem a senha
-        print(f'PDF protegido por senha (não foi possível desbloquear): {input_pdf}')
-        return False
+        input_path = Path(input_pdf)
+        temp_desbloqueado = input_path.parent / f"{input_path.stem}_temp_desbloqueado.pdf"
+        
+        print(f'🔐 Iniciando desbloqueio do PDF: {input_pdf}')
+        
+        try:
+            # Abrir o PDF e remover restrições de segurança
+            print(f'   → Abrindo PDF com pikepdf...')
+            with pikepdf.open(input_pdf, password="") as pdf:
+                print(f'   → Salvando versão desbloqueada...')
+                # Salvar sem criptografia para remover restricoes
+                pdf.save(temp_desbloqueado, encryption=None)
+            
+            # Sobrescrever o arquivo original com a versão desbloqueada
+            print(f'   → Sobrescrevendo arquivo original...')
+            shutil.move(str(temp_desbloqueado), input_pdf)
+            print(f'✓ PDF desbloqueado e sobrescrito com sucesso: {input_pdf}')
+            
+            return input_pdf
+            
+        except pikepdf.PasswordError:
+            # PDF protegido por senha que não pode ser aberta sem a senha
+            print(f'⚠ PDF protegido por senha (não foi possível desbloquear): {input_pdf}')
+            if temp_desbloqueado.exists():
+                temp_desbloqueado.unlink()
+            return None
+            
     except Exception as e:
-        # Outros erros (arquivo corrompido, não é PDF válido, etc.)
-        print(f'Aviso ao processar PDF: {e}')
-        return False
+        print(f'⚠ Erro ao desbloquear PDF: {str(e)}')
+        try:
+            temp_desbloqueado = Path(input_pdf).parent / f"{Path(input_pdf).stem}_temp_desbloqueado.pdf"
+            if temp_desbloqueado.exists():
+                temp_desbloqueado.unlink()
+        except:
+            pass
+        return None
 
 
 def detect_boleto_type(filepath):
@@ -245,12 +310,21 @@ def upload_file():
         
         try:
             # Primeiro tenta desbloquear o PDF se estiver protegido
-            print(f"Verificando se o PDF está bloqueado...")
-            desbloquear_pdf(filepath)
-            print(f"PDF desbloqueado (se necessário)")
+            print(f"\n{'='*60}")
+            print(f"📄 PROCESSANDO: {filename}")
+            print(f"{'='*60}")
+            print(f"🔐 Desbloqueando PDF (se necessário)...")
+            
+            resultado_desbloqueio = desbloquear_pdf(filepath)
+            
+            if resultado_desbloqueio:
+                print(f"✓ PDF foi desbloqueado e sobrescrito com sucesso")
+                print(f"  Arquivo em: {filepath}")
+            else:
+                print(f"ℹ Usando arquivo original (não era bloqueado ou não foi possível desbloquear)")
             
             # Detectar o tipo de boleto
-            print(f"Detectando tipo de boleto...")
+            print(f"\n🔍 Detectando tipo de boleto...")
             boleto_type = detect_boleto_type(filepath)
             
             if boleto_type is None:
@@ -258,7 +332,7 @@ def upload_file():
                 os.remove(filepath)
                 return redirect(url_for('index'))
             
-            print(f"Tipo detectado: {boleto_type}")
+            print(f"✓ Tipo detectado: {boleto_type}")
             
             # Processar o PDF com a função apropriada
             pdf_path = Path(filepath)
@@ -283,9 +357,10 @@ def upload_file():
             
             # Armazenar dados na sessão para uso posterior na atualização do banco
             session['boleto_data'] = processed_data
+            session['pdf_desbloqueado_path'] = filepath
             
-            # Limpar arquivos temporários
-            os.remove(filepath)
+            print(f"✓ PDF desbloqueado mantido em: {filepath}")
+            print(f"{'='*60}\n")
             
             return render_template('resultado_boleto_condominio.html', 
                                  data=extracted_data, 
@@ -297,6 +372,8 @@ def upload_file():
             flash(f'Erro ao processar o arquivo: {str(e)}')
             import traceback
             traceback.print_exc()
+            if os.path.exists(filepath):
+                os.remove(filepath)
             return redirect(url_for('index'))
     
     else:
@@ -309,6 +386,44 @@ def download_file(filename):
         return send_file(filename, as_attachment=True)
     except Exception as e:
         flash(f'Erro ao baixar o arquivo: {str(e)}')
+        return redirect(url_for('index'))
+
+@app.route('/download_desbloqueado', methods=['GET'])
+def download_desbloqueado():
+    """Faz download do arquivo PDF desbloqueado armazenado na sessão"""
+    try:
+        pdf_path = session.get('pdf_desbloqueado_path')
+        
+        if not pdf_path or not os.path.exists(pdf_path):
+            flash('Arquivo desbloqueado não encontrado')
+            return redirect(url_for('index'))
+        
+        filename = os.path.basename(pdf_path)
+        print(f"📥 Download do arquivo desbloqueado: {filename}")
+        return send_file(pdf_path, as_attachment=True, download_name=filename)
+    
+    except Exception as e:
+        flash(f'Erro ao baixar o arquivo desbloqueado: {str(e)}')
+        import traceback
+        traceback.print_exc()
+        return redirect(url_for('index'))
+
+@app.route('/abrir_desbloqueado', methods=['GET'])
+def abrir_desbloqueado():
+    """Abre o PDF desbloqueado no navegador (inline)"""
+    try:
+        pdf_path = session.get('pdf_desbloqueado_path')
+
+        if not pdf_path or not os.path.exists(pdf_path):
+            flash('Arquivo desbloqueado não encontrado')
+            return redirect(url_for('index'))
+
+        return send_file(pdf_path, as_attachment=False, mimetype='application/pdf')
+
+    except Exception as e:
+        flash(f'Erro ao abrir o arquivo desbloqueado: {str(e)}')
+        import traceback
+        traceback.print_exc()
         return redirect(url_for('index'))
 
 @app.route('/atualizar_banco', methods=['POST'])

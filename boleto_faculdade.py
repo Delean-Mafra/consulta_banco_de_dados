@@ -23,8 +23,8 @@ REGEX_LINHA_DIGITAVEL = re.compile(
 )
 
 REGEX_DATA = re.compile(r'\b(\d{2}/\d{2}/\d{4})\b')
-REGEX_NOSSO_NUMERO_LABEL = re.compile(r'^\s*Nosso Número\s*$', re.IGNORECASE)
-REGEX_NOSSO_NUMERO_VALUE = re.compile(r'^\s*\d{2}/\d{6,}-\d\b')
+REGEX_NOSSO_NUMERO_LABEL = re.compile(r'^\s*Nosso N[úu]mero\s*$', re.IGNORECASE)
+REGEX_NOSSO_NUMERO_VALUE = re.compile(r'^\s*\d{2,3}/\d{6,}-\d\b')
 REGEX_VALOR_DOC_LABEL = re.compile(r'^\s*Valor Documento\s*$', re.IGNORECASE)
 REGEX_VALOR_RS = re.compile(r'R\$\s*(\d{1,3}(?:\.\d{3})*,\d{2})')
 REGEX_NUMERO_DOC_LABEL = re.compile(r'^\s*N[úu]mero do documento\s*$', re.IGNORECASE)
@@ -167,18 +167,28 @@ def find_numero_documento(lines: List[str]) -> str | None:
 
 
 def find_nosso_numero(lines: List[str]) -> str | None:
+    # Primeiro tenta buscar na linha que contém "Nosso Número" seguido do valor
     for i, l in enumerate(lines):
         if REGEX_NOSSO_NUMERO_LABEL.match(l):
             if i + 1 < len(lines):
                 val_line = lines[i + 1].strip()
                 if REGEX_NOSSO_NUMERO_VALUE.match(val_line):
                     return val_line
-    # fallback: busca padrão genérico  dd/dddddd-d
-    pattern = re.compile(r'\b\d{2}/\d{6,}-\d\b')
+    
+    # Busca padrão genérico ddd/dddddddd-d (formato boleto faculdade: 109/01342940-4)
+    pattern = re.compile(r'\b\d{2,3}/\d{6,}-\d\b')
     for l in lines:
         m = pattern.search(l)
         if m:
             return m.group(0)
+    
+    # Fallback: busca na mesma linha que contém "Nosso Número" ou "Nosso Numero"
+    for l in lines:
+        if re.search(r'Nosso\s*N[úu]mero', l, re.IGNORECASE):
+            m = pattern.search(l)
+            if m:
+                return m.group(0)
+    
     return None
 
 

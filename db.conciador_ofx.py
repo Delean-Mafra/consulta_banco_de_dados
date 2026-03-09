@@ -4,6 +4,8 @@ from decimal import Decimal
 import re
 import os
 from db_lerconfiguracao import ler_configuracao as LC, get_db as gdb, datetime
+import tempfile
+from werkzeug.utils import secure_filename
 
 
 
@@ -240,6 +242,42 @@ def conciliar():
         resultado = conciliar_ofx(file_path, cod_conta)
         
         return jsonify(resultado)
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/conciliar-upload', methods=['POST'])
+def conciliar_upload():
+    """Endpoint para realizar a conciliação com upload de arquivo"""
+    try:
+        # Verificar se arquivo foi enviado
+        if 'file' not in request.files:
+            return jsonify({'error': 'Nenhum arquivo enviado'}), 400
+        
+        file = request.files['file']
+        
+        if file.filename == '':
+            return jsonify({'error': 'Nenhum arquivo selecionado'}), 400
+        
+        if not file.filename.lower().endswith('.ofx'):
+            return jsonify({'error': 'O arquivo deve ser um arquivo OFX (.ofx)'}), 400
+        
+        cod_conta = request.form.get('cod_conta', 25, type=int)
+        
+        # Salvar arquivo temporário
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.ofx') as temp_file:
+            temp_file_path = temp_file.name
+            file.save(temp_file_path)
+        
+        try:
+            # Processar arquivo
+            resultado = conciliar_ofx(temp_file_path, cod_conta)
+            return jsonify(resultado)
+        finally:
+            # Limpar arquivo temporário
+            if os.path.exists(temp_file_path):
+                os.remove(temp_file_path)
     
     except Exception as e:
         return jsonify({'error': str(e)}), 500
