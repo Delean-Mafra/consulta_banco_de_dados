@@ -9,7 +9,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
+        } 
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -110,7 +110,27 @@
             transform: none;
         }
 
-        .loading {
+        .btn-file {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-file:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-file:active {
+            transform: translateY(0);
+        }
             display: none;
             text-align: center;
             padding: 20px;
@@ -309,12 +329,25 @@
                 <form id="conciliacaoForm">
                     <div class="form-group">
                         <label for="filePath">📁 Caminho do Arquivo OFX:</label>
+                        <div style="display: flex; gap: 10px; align-items: flex-end;">
+                            <input 
+                                type="text" 
+                                id="filePath" 
+                                name="filePath" 
+                                placeholder="Ex: D:\G3\Cliente\OFX\Extrato conta corrente - 052025.ofx"
+                                style="flex: 1;"
+                                required
+                            >
+                            <button type="button" class="btn-file" id="btnSelecionarArquivo">
+                                📂 Selecionar
+                            </button>
+                        </div>
                         <input 
-                            type="text" 
-                            id="filePath" 
-                            name="filePath" 
-                            placeholder="Ex: D:\G3\Cliente\OFX\Extrato conta corrente - 052025.ofx"
-                            required
+                            type="file" 
+                            id="ofxFile" 
+                            name="ofxFile" 
+                            accept=".ofx"
+                            style="display: none;"
                         >
                     </div>
 
@@ -402,6 +435,23 @@
     </div>
 
     <script>
+        let arquivoSelecionado = null;
+
+        // Abrir dialog de seleção de arquivo ao clicar no botão
+        document.getElementById('btnSelecionarArquivo').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('ofxFile').click();
+        });
+
+        // Preencher campo de texto quando arquivo é selecionado
+        document.getElementById('ofxFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                arquivoSelecionado = file;
+                document.getElementById('filePath').value = file.name;
+            }
+        });
+
         document.getElementById('conciliacaoForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -415,16 +465,31 @@
             document.getElementById('btnConciliar').disabled = true;
 
             try {
-                const response = await fetch('/conciliar', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        file_path: filePath,
-                        cod_conta: codConta
-                    })
-                });
+                let response;
+
+                // Se arquivo foi selecionado via file input, fazer upload
+                if (arquivoSelecionado) {
+                    const formData = new FormData();
+                    formData.append('file', arquivoSelecionado);
+                    formData.append('cod_conta', codConta);
+
+                    response = await fetch('/conciliar-upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                } else {
+                    // Senão, usar o caminho digitado (legacy)
+                    response = await fetch('/conciliar', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            file_path: filePath,
+                            cod_conta: codConta
+                        })
+                    });
+                }
 
                 const data = await response.json();
 
