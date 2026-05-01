@@ -1,0 +1,4 @@
+-- Script gerado automaticamente (DESTINO: BASE_CONFIGURADA)
+-- Data: 2026-03-22
+-- Destino: D:\G3\Dados\DELEAN.FDB
+-- Origem de leitura: D:\G3\Dados\PROCEL.FDB

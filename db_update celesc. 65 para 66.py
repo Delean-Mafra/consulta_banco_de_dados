@@ -23,6 +23,7 @@ try:
         SELECT FIRST 1 X.COD_COMPRA
         FROM COMPRA X
         WHERE X.COD_COMPRA >= 1023
+        AND X.ATV_COMPRA = 'V'
         AND X.COD_FORNECEDOR = Z.COD_FORNECEDOR
         AND X.VALOR_LIQUIDO_COMPRA = Z.VALOR_PREVISTO
         AND Z.TIPO_REL = 'A'
@@ -32,6 +33,7 @@ try:
         SELECT FIRST 1 X.NUMERO_NF
         FROM COMPRA X
         WHERE X.COD_COMPRA >= 1023
+        AND X.ATV_COMPRA = 'V'
         AND X.COD_FORNECEDOR = Z.COD_FORNECEDOR
         AND X.VALOR_LIQUIDO_COMPRA = Z.VALOR_PREVISTO
         AND Z.TIPO_REL = 'A'
@@ -41,6 +43,7 @@ try:
         SELECT 1
         FROM COMPRA X
         WHERE X.COD_COMPRA >= 1023
+        AND X.ATV_COMPRA = 'V'
         AND X.COD_FORNECEDOR = Z.COD_FORNECEDOR
         AND X.VALOR_LIQUIDO_COMPRA = Z.VALOR_PREVISTO
         AND Z.TIPO_REL = 'A'
@@ -61,6 +64,7 @@ try:
     FROM COMPRA X
     INNER JOIN LANC_FINANCEIRO Z ON X.COD_FORNECEDOR = Z.COD_FORNECEDOR
     WHERE X.COD_COMPRA >= 1023
+    AND X.ATV_COMPRA = 'V'
     AND X.COD_FORNECEDOR = 22
     AND X.VALOR_LIQUIDO_COMPRA = Z.VALOR_PREVISTO
     AND Z.TIPO_REL = 'C'
@@ -80,6 +84,7 @@ try:
         UPDATE COMPRA X
         SET X.MODELO_NF = '66'
         WHERE X.COD_COMPRA IN ({','.join(map(str, updated_cod_compra))})
+        AND X.ATV_COMPRA = 'V'
         AND CAST(X.MODELO_NF AS VARCHAR(10)) = '65';
         """
         c.execute(update_compra_query)

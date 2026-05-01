@@ -1,3 +1,10 @@
+# Este código é responsável por calcular o valor do dízimo com base nos lançamentos financeiros registrados no banco de dados. Ele realiza as seguintes etapas:
+# 1. Conecta ao banco de dados utilizando as configurações lidas de um arquivo de configuração.
+# 2. Executa consultas SQL para obter as datas de emissão, pagamento e competência dos lançamentos financeiros relevantes.
+# 3. Calcula o valor do dízimo com base nos valores pagos entre as datas obtidas.
+# 4. Insere um novo registro no banco de dados com o valor calculado e as informações associadas.
+
+
 from db_lerconfiguracao import ler_configuracao, get_db
 db = get_db()
 
@@ -60,7 +67,7 @@ WHERE X.DATA_PAGAMENTO BETWEEN '{data_inicial}' AND '{data_final}'
 AND X.COD_CONTA_FINANCEIRA IN (25,30,4)
 AND X.TIPO_LANC_FIN = 'R'
 AND X.ATV_LANC_FINANCEIRO = 'V'
-AND X.COD_SITUACAO_TITULO = 4
+AND X.COD_SITUACAO_TITULO = 4;
 """
 
 c.execute(query_select)
@@ -87,16 +94,7 @@ data_vencimento = c.fetchone()[0] or 0  # Pega o resultado do SELECT
 
 
 def incrementar_competencia(data_competencia):
-    """
-    Incrementa a data de competência no formato mm/aaaa
-    Exemplo: 12/2024 -> 01/2025
-    
-    Args:
-        data_competencia (str): Data no formato 'mm/aaaa'
-    
-    Returns:
-        str: Nova data de competência no formato 'mm/aaaa'
-    """
+
     # Separar mês e ano
     mes, ano = data_competencia.split('/')
     
@@ -153,7 +151,22 @@ c.execute(query_select)
 data_emissao = c.fetchone()[0] or 0  # Pega o resultado do SELECT
 
 
-observacao =(f'{data_inicial} a {data_final} Proxima referencia -  {data_emissao}' )
+def formatar_data_br(valor_data):
+    if hasattr(valor_data, 'strftime'):
+        return valor_data.strftime('%d/%m/%Y')
+
+    valor_str = str(valor_data).split(' ')[0]
+    if '-' in valor_str:
+        ano, mes, dia = valor_str.split('-')
+        return f"{dia}/{mes}/{ano}"
+
+    return str(valor_data)
+
+
+observacao = (
+    f"{formatar_data_br(data_inicial)} a {formatar_data_br(data_final)} "
+    f"Proxima referencia -  {formatar_data_br(data_emissao)}"
+)
 
 
 # Query para o INSERT

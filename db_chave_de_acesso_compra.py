@@ -3,6 +3,10 @@ db = get_db()
 lc = ler_configuracao()
 
 
+# Este script conecta ao banco de dados, 
+# executa uma consulta para obter a chave de acesso, nome do fornecedor e data de compra das notas fiscais modelo 65, formata os resultados e os exibe no console.   
+
+
 # Conectar ao banco de dados
 try:
     conn = db.connect(
